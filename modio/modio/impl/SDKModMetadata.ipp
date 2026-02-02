@@ -21,6 +21,7 @@
 #include "modio/core/entities/ModioModTagOptions.h"
 #include "modio/detail/ops/mod/GetModDependenciesOp.h"
 #include "modio/detail/ops/mod/GetModDetailsOp.h"
+#include "modio/detail/ops/mod/GetModFileOp.h"
 #include "modio/detail/ops/mod/GetModInfoOp.h"
 #include "modio/detail/ops/mod/GetModMediaAvatarOp.h"
 #include "modio/detail/ops/mod/GetModMediaGalleryOp.h"
@@ -78,6 +79,17 @@ namespace Modio
 			}
 		});
 	}
+
+	inline void GetModFileAsync(Modio::ModID ModId, std::string FileVersion, std::function<void(Modio::ErrorCode, const std::string&)> Callback)
+	{
+		Modio::Detail::SDKSessionData::EnqueueTask([ModId, FileVersion, Callback = std::move(Callback)]() mutable {
+			if (Modio::Detail::RequireSDKIsInitialized(Callback) && Modio::Detail::RequireValidModID(ModId, Callback))
+			{
+				Modio::Detail::GetModFileAsync(ModId, FileVersion, Callback);
+			}
+		});
+	}
+
 // Disabled
 #if (0)
 	void GetModFileDetailsAsync(Modio::ModID ModId,

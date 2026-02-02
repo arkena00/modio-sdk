@@ -106,6 +106,7 @@ namespace Modio
         static const HttpRequestParams GetMultipartUploadSessionsRequest { Modio::Detail::Verb::GET, "/games/{game-id}/mods/{mod-id}/files/multipart/sessions" }; 
         static const HttpRequestParams DeleteModfileRequest { Modio::Detail::Verb::DELETE, "/games/{game-id}/mods/{mod-id}/files/{file-id}" , GetContentTypeEnum("application/x-www-form-urlencoded") }; 
         static const HttpRequestParams GetModfileRequest { Modio::Detail::Verb::GET, "/games/{game-id}/mods/{mod-id}/files/{file-id}" , GetContentTypeEnum("application/x-www-form-urlencoded") }; 
+        static const HttpRequestParams GetModfileByVersionRequest { Modio::Detail::Verb::GET, "/games/{game-id}/mods/{mod-id}/files" , GetContentTypeEnum("application/x-www-form-urlencoded") };
         static const HttpRequestParams EditModfileRequest { Modio::Detail::Verb::PUT, "/games/{game-id}/mods/{mod-id}/files/{file-id}" , GetContentTypeEnum("application/x-www-form-urlencoded") }; 
         static const HttpRequestParams ManagePlatformStatusRequest { Modio::Detail::Verb::POST, "/games/{game-id}/mods/{mod-id}/files/{file-id}/platforms" , GetContentTypeEnum("application/x-www-form-urlencoded") }; 
         static const HttpRequestParams DeleteModMediaRequest { Modio::Detail::Verb::DELETE, "/games/{game-id}/mods/{mod-id}/media" , GetContentTypeEnum("application/x-www-form-urlencoded") }; 
