@@ -10,7 +10,9 @@
       "name": "win",
       "displayName": "win",
       "description": "Windows native compilation",
-      "generator": "Ninja",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "toolset": "v143,version=14.38.33130",
       "binaryDir": "${sourceDir}/out/build/win",
       "cacheVariables": {
         "MODIO_PLATFORM": {
