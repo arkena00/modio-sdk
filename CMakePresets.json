@@ -50,6 +50,10 @@
         "CMAKE_INSTALL_PREFIX": {
           "type": "STRING",
           "value": "${sourceDir}/out/install/linux64"
+        },
+        "CMAKE_SYSTEM_NAME": {
+          "type": "STRING",
+          "value": "Linux"
         }
       }
     },
@@ -172,7 +176,15 @@
         },
         "CMAKE_ANDROID_NDK": {
           "type": "STRING",
-          "value": "%localappdata%/Android/Sdk/ndk/25.1.8937393"
+          "value": "C:/Users/ark/AppData/Local/Android/Sdk/ndk/25.1.8937393"
+        },
+        "CMAKE_SYSTEM_NAME": {
+          "type": "STRING",
+          "value": "Android"
+        },
+        "CMAKE_SYSTEM_VERSION": {
+          "type": "STRING",
+          "value": "24"
         },
         "ANDROID_ABI": {
           "type": "STRING",
