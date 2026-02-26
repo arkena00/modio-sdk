@@ -69,7 +69,7 @@ namespace Modio
 			OutputDebugStringA(output);
 		}
 #endif
-#if MODIO_SEPARATE_COMPILATION
+#ifdef MODIO_SEPARATE_COMPILATION
 		bool BaseOperationCommonImpl::RequiresShutdown = false;
 #endif
 	} // namespace Detail
