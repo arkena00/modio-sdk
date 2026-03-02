@@ -23,7 +23,7 @@ namespace Modio
 		{
 			/// @brief Generates a random Version 4, variant 2, GUID
 			/// @return the random GUID value
-			Modio::GuidV4 GuidCreate()
+			inline Modio::GuidV4 GuidCreate()
 			{
 				std::random_device Rd;
 				std::mt19937_64 Engine(Rd());
@@ -44,7 +44,7 @@ namespace Modio
 			/// @brief Convert a GUID in binary representation, into a printable string version
 			/// @param InGuid the binary GUID to convert
 			/// @return the GUID as a text string
-			std::string GuidToString(const Modio::GuidV4& InGuid)
+			inline std::string GuidToString(const Modio::GuidV4& InGuid)
 			{
 				char Result[36];
 				auto ByteToHex = [](uint8_t v, char* out) {
@@ -76,7 +76,7 @@ namespace Modio
 			/// GUID value
 			/// @param InString the GUID to parse
 			/// @return the GUID in binary form, or a NULL guid if the parsing failed.
-			Modio::GuidV4 GuidFromString(const std::string& InString)
+			inline Modio::GuidV4 GuidFromString(const std::string& InString)
 			{
 				Modio::GuidV4 Uuid;
 				if (InString.size() != 36)
