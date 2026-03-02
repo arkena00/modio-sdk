@@ -145,7 +145,7 @@ namespace Modio
 			// Search in "Members" for any attribute that has a PayloadContent with
 			// ContentSize != 0 and add that to the result "FileSize"
 			MODIO_IMPL static Modio::Optional<Modio::FileSize> PayloadContentSize(
-				std::map<std::string, PayloadContent> Members);
+				std::multimap<std::string, PayloadContent> Members);
 		};
 
 		/// @docinternal
@@ -406,7 +406,7 @@ namespace Modio
 			// let it be put as a different parameter
 			Modio::Optional<std::string> Payload {};
 
-			std::map<std::string, PayloadContent> PayloadMembers {};
+			std::multimap<std::string, PayloadContent> PayloadMembers {};
 
 			Modio::Optional<std::string> AuthTokenOverride {};
 

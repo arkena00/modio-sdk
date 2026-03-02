@@ -32,10 +32,24 @@ namespace Modio
 			Modio::FilterParams Filter {};
 			Modio::GameID GameID {};
 
+		    Modio::Detail::HttpRequestParams RequestParams {};
 			ModioAsio::coroutine CoroutineState {};
 
 		public:
-			ListAllModsOp(Modio::GameID GameID, FilterParams InFilter) : Filter(std::move(InFilter)), GameID(GameID) {}
+			ListAllModsOp(Modio::GameID GameID, FilterParams InFilter) : Filter(std::move(InFilter)), GameID(GameID)
+			{
+			    RequestParams =
+                Modio::Detail::GetModsRequest.SetGameID(Modio::Detail::SDKSessionData::CurrentGameID())
+			    .SetGameID(GameID)
+                .AddPlatformStatusFilter()
+                .AddStatusFilter()
+                .AppendQueryParameterMap(Filter.ToQueryParamaters());
+
+			    if (!Filter.GetPlatform().empty())
+			    {
+			        RequestParams.SuppressPlatformHeader().AddHeaderRaw("x-modio-platform", Filter.GetPlatform());
+			    }
+			}
 
 			template<typename CoroType>
 			void operator()(CoroType& Self, Modio::ErrorCode ec = {})
@@ -44,7 +58,7 @@ namespace Modio
 				reenter(CoroutineState)
 				{
 					// In case there is no filter, it could be possible to get all cached ModInfo
-					if (Filter.ToQueryParamaters().empty())
+					if (Filter.ToQueryParamaters().empty() && Filter.GetPlatform().empty())
 					{
 						Modio::Optional<Modio::ModInfoList> CachedModInfo =
 							Services::GetGlobalService<CacheService>().FetchFromCache(GameID);
@@ -57,11 +71,7 @@ namespace Modio
 					}
 
 						yield Modio::Detail::PerformRequestAndGetResponseAsync(
-							ResponseBodyBuffer,
-								Modio::Detail::GetModsRequest.SetGameID(GameID)
-								.AddPlatformStatusFilter()
-								.AddStatusFilter()
-								.AppendQueryParameterMap(Filter.ToQueryParamaters()),
+							ResponseBodyBuffer, RequestParams,
 							Modio::Detail::CachedResponse::Allow, std::move(Self));
 					
 					if (ec)

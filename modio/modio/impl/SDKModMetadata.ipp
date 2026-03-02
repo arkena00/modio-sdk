@@ -30,6 +30,8 @@
 #include "modio/detail/ops/mod/ListAllModsOp.h"
 #include "modio/detail/ops/mod/ListUserCreatedModsOp.h"
 #include "modio/detail/ops/mod/SubmitModRatingOp.h"
+#include "modio/detail/ops/mod/AddModKvpsOp.h"
+#include "modio/detail/ops/mod/DeleteModKvpsOp.h"
 #include "modio/detail/ops/mod/AddModDependenciesOp.h"
 #include "modio/detail/ops/mod/DeleteModDependenciesOp.h"
 #include "modio/detail/serialization/ModioFileMetadataSerialization.h"
@@ -80,12 +82,12 @@ namespace Modio
 		});
 	}
 
-	inline void GetModFileAsync(Modio::ModID ModId, std::string FileVersion, std::function<void(Modio::ErrorCode, const std::string&)> Callback)
+	inline void GetModFileAsync(Modio::ModID ModId, Modio::GetModFileParams Params, std::function<void(Modio::ErrorCode, const std::string&)> Callback)
 	{
-		Modio::Detail::SDKSessionData::EnqueueTask([ModId, FileVersion, Callback = std::move(Callback)]() mutable {
+		Modio::Detail::SDKSessionData::EnqueueTask([ModId, Params = std::move(Params), Callback = std::move(Callback)]() mutable {
 			if (Modio::Detail::RequireSDKIsInitialized(Callback) && Modio::Detail::RequireValidModID(ModId, Callback))
 			{
-				Modio::Detail::GetModFileAsync(ModId, FileVersion, Callback);
+				Modio::Detail::GetModFileAsync(ModId, std::move(Params), Callback);
 			}
 		});
 	}
@@ -157,7 +159,7 @@ namespace Modio
 		});
 	}
 
-	void GetModDependenciesAsync(
+    void GetModDependenciesAsync(
 		Modio::ModID ModID, bool Recursive,
 		std::function<void(Modio::ErrorCode, Modio::Optional<Modio::ModDependencyList> Dependencies)> Callback)
 	{
@@ -170,8 +172,36 @@ namespace Modio
 		});
 	}
 
-	void AddModDependenciesAsync(Modio::ModID ModID, std::vector<Modio::ModID> Dependencies,
-								 std::function<void(Modio::ErrorCode)> Callback)
+    inline void AddModKvpsAsync(Modio::ModID ModID, std::vector<Modio::Metadata> Kvps,
+                                std::function<void(Modio::ErrorCode)> Callback)
+    {
+        Modio::Detail::SDKSessionData::EnqueueTask([ModID, Kvps = std::move(Kvps),
+                Callback = std::move(Callback)]() mutable {
+                if (Modio::Detail::RequireSDKIsInitialized(Callback) && Modio::Detail::RequireNotRateLimited(Callback) &&
+                    Modio::Detail::RequireUserIsAuthenticated(Callback) &&
+                    Modio::Detail::RequireValidModID(ModID, Callback))
+                {
+                    Modio::Detail::AddModKvps(ModID, Kvps, Callback);
+                }
+            });
+    }
+
+    inline void DeleteModKvpsAsync(Modio::ModID ModID, std::vector<Modio::Metadata> Kvps,
+                                std::function<void(Modio::ErrorCode)> Callback)
+    {
+        Modio::Detail::SDKSessionData::EnqueueTask([ModID, Kvps = std::move(Kvps),
+                Callback = std::move(Callback)]() mutable {
+                if (Modio::Detail::RequireSDKIsInitialized(Callback) && Modio::Detail::RequireNotRateLimited(Callback) &&
+                    Modio::Detail::RequireUserIsAuthenticated(Callback) &&
+                    Modio::Detail::RequireValidModID(ModID, Callback))
+                {
+                    Modio::Detail::DeleteModKvps(ModID, Kvps, Callback);
+                }
+            });
+    }
+
+    void AddModDependenciesAsync(Modio::ModID ModID, std::vector<Modio::ModID> Dependencies,
+                                 std::function<void(Modio::ErrorCode)> Callback)
 	{
 		Modio::Detail::SDKSessionData::EnqueueTask([ModID, Dependencies = std::move(Dependencies),
 													Callback = std::move(Callback)]() mutable {

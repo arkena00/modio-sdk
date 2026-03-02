@@ -269,7 +269,7 @@ namespace Modio
 			auto KeyIterator = NewParamsInstance.PayloadMembers.find(Key);
 			if (KeyIterator != NewParamsInstance.PayloadMembers.end())
 			{
-				NewParamsInstance.PayloadMembers.erase(KeyIterator);
+				//NewParamsInstance.PayloadMembers.erase(KeyIterator);
 			}
 			NewParamsInstance.PayloadMembers.emplace(Key, MakePayloadContent(std::move(RawPayloadBuffer)));
 			return NewParamsInstance;
@@ -940,7 +940,7 @@ namespace Modio
 		}
 
 		Modio::Optional<Modio::FileSize> PayloadContent::PayloadContentSize(
-			std::map<std::string, PayloadContent> Members)
+			std::multimap<std::string, PayloadContent> Members)
 		{
 			Modio::FileSize Result = Modio::FileSize(0);
 			// Try to find a PayloadContent that has ContentSize != 0
