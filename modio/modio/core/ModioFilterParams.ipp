@@ -112,6 +112,23 @@ namespace Modio
 		return *this;
 	}
 
+    Modio::FilterParams& FilterParams::WithKvps(std::vector<std::pair<std::string, std::string>> InKvps)
+    {
+	    Kvps = std::move(InKvps);
+	    return *this;
+    }
+
+    Modio::FilterParams& FilterParams::WithPlatform(std::string InPlatform)
+    {
+	    Platform = std::move(InPlatform);
+	    return *this;
+    }
+
+    const std::string& FilterParams::GetPlatform() const
+	{
+	    return Platform;
+	}
+
 	Modio::FilterParams& FilterParams::WithoutTags(std::vector<std::string> NewTags)
 	{
 		ExcludedTags = std::move(NewTags);
@@ -261,6 +278,17 @@ namespace Modio
 			}
 			TagStr.resize(TagStr.size() - 1);
 			FilterFields.emplace("tags", TagStr);
+		}
+
+		if (!Kvps.empty())
+		{
+			std::string KvpStr;
+			for (const auto& [Key, Value] : Kvps)
+			{
+				KvpStr += Modio::Detail::String::URLEncode(Key) + ":" + Modio::Detail::String::URLEncode(Value) + ",";
+			}
+			KvpStr.resize(KvpStr.size() - 1);
+			FilterFields.emplace("metadata_kvp", KvpStr);
 		}
 
 		if (!ExcludedTags.empty())

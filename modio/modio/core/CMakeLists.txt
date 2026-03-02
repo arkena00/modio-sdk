@@ -22,6 +22,7 @@ add_modio_implementation_file(${CMAKE_CURRENT_LIST_DIR}/ModioModDependency.ipp)
 add_modio_implementation_file(${CMAKE_CURRENT_LIST_DIR}/ModioServerInitializeOptions.ipp)
 
 add_public_header(${MODIO_TARGET_NAME} ${CMAKE_CURRENT_LIST_DIR}/ModioFilterParams.h)
+add_public_header(${MODIO_TARGET_NAME} ${CMAKE_CURRENT_LIST_DIR}/ModioGetModFileParams.h)
 add_public_header(${MODIO_TARGET_NAME} ${CMAKE_CURRENT_LIST_DIR}/ModioMetricsService.h)
 add_public_header(${MODIO_TARGET_NAME} ${CMAKE_CURRENT_LIST_DIR}/ModioModCollectionEntry.h)
 add_public_header(${MODIO_TARGET_NAME} ${CMAKE_CURRENT_LIST_DIR}/ModioTemporaryModSet.h)

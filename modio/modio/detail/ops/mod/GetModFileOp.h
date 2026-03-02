@@ -2,7 +2,7 @@
 #include <filesystem>
 
 #include "modio/core/ModioBuffer.h"
-#include "modio/core/ModioCreateModParams.h"
+#include "modio/core/ModioGetModFileParams.h"
 #include "modio/detail/serialization/ModioModInfoSerialization.h"
 #include "modio/detail/AsioWrapper.h"
 #include "modio/detail/ModioJsonHelpers.h"
@@ -18,11 +18,11 @@ namespace Modio
         class GetModFileOp
         {
         public:
-            GetModFileOp(Modio::GameID GameID, Modio::ApiKey ApiKey, Modio::ModID ModId, std::string FileVersion)
+            GetModFileOp(Modio::GameID GameID, Modio::ApiKey ApiKey, Modio::ModID ModId, Modio::GetModFileParams Params)
                 : GameID(GameID),
                   ApiKey(ApiKey),
                   ModId(ModId),
-                  FileVersion(FileVersion)
+                  ModFileParams(std::move(Params))
                 {}
 
             template<typename CoroType>
@@ -33,8 +33,11 @@ namespace Modio
                     yield Modio::Detail::PerformRequestAndGetResponseAsync(
                         ModFileInfoBuffer,
                         Modio::Detail::GetModfileByVersionRequest.SetGameID(GameID)
-                            .SetModID(ModId).AddQueryParamRaw("version", FileVersion),
-                        Modio::Detail::CachedResponse::Allow, std::move(Self));
+                            .SetModID(ModId)
+                            .AddQueryParamRaw("version", ModFileParams.Version)
+                            .SuppressPlatformHeader()
+                            .AddHeaderRaw("X-Modio-Platform", ModFileParams.Platform)
+                        , Modio::Detail::CachedResponse::Disallow, std::move(Self));
                     if (ec)
                     {
                         Self.complete(ec, "");
@@ -84,7 +87,7 @@ namespace Modio
             Modio::GameID GameID;
             Modio::ApiKey ApiKey;
             Modio::ModID ModId;
-            std::string FileVersion;
+            Modio::GetModFileParams ModFileParams;
 
             ModioAsio::coroutine CoroutineState;
             Modio::Detail::DynamicBuffer ModFileInfoBuffer;
@@ -95,12 +98,12 @@ namespace Modio
     #include <asio/unyield.hpp>
 
         template<typename Callback>
-		void GetModFileAsync(Modio::ModID ModId, std::string FileVersion, Callback&& OnCallback)
+		void GetModFileAsync(Modio::ModID ModId, GetModFileParams Params, Callback&& OnCallback)
 		{
             return ModioAsio::async_compose<Callback, 
                                         void(Modio::ErrorCode, const std::string&)>(
             Modio::Detail::GetModFileOp(Modio::Detail::SDKSessionData::CurrentGameID(),
-                                        Modio::Detail::SDKSessionData::CurrentAPIKey(), ModId, FileVersion),
+                                        Modio::Detail::SDKSessionData::CurrentAPIKey(), ModId, std::move(Params)),
             OnCallback, 
             Modio::Detail::Services::GetGlobalContext().get_executor());
 		}

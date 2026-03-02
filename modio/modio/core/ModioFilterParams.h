@@ -139,6 +139,11 @@ namespace Modio
 		/// @return *this
 		MODIO_IMPL FilterParams& WithTags(std::vector<std::string> NewTags);
 
+	    MODIO_IMPL FilterParams& WithKvps(std::vector<std::pair<std::string, std::string>> InKvps);
+
+	    MODIO_IMPL FilterParams& WithPlatform(std::string InPlatform);
+	    MODIO_IMPL const std::string& GetPlatform() const;
+
 		/// @docpublic
 		/// @brief Only include mods that do not have the specified tag
 		/// @param Tag Tag to exclude
@@ -221,7 +226,9 @@ namespace Modio
 		Modio::Optional<std::chrono::system_clock::time_point> DateRangeBegin {};
 		Modio::Optional<std::chrono::system_clock::time_point> DateRangeEnd {};
 
+	    std::string Platform;
 		std::vector<std::string> Tags {};
+		std::vector<std::pair<std::string, std::string>> Kvps {};
 		std::vector<std::string> ExcludedTags {};
 
 		std::vector<Modio::ModID> IncludedIDs {};

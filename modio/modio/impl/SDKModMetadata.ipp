@@ -15,6 +15,7 @@
 #endif
 
 #include "modio/core/ModioStdTypes.h"
+#include "modio/core/ModioGetModFileParams.h"
 #include "modio/core/entities/ModioModDetails.h"
 #include "modio/core/entities/ModioModInfo.h"
 #include "modio/core/entities/ModioModInfoList.h"
